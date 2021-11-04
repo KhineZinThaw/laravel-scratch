@@ -21,17 +21,17 @@ class SessionController extends Controller
 
         //based on provided crenditials
         if(auth()->attempt($attributes)) {
-            //session fixation
-            session()->regenerate();
-            
-            //redirect
-            return redirect('/')->with('success', 'Welcome Back!');
+            //auth failed
+            throw ValidationException::withMessages([
+                'email' => 'Your email could not be verified'
+            ]);
         }
 
-        //auth failed
-        throw ValidationException::withMessages([
-            'email' => 'Your email could not be verified'
-        ]);
+        //session fixation
+        session()->regenerate();
+            
+        //redirect
+        return redirect('/')->with('success', 'Welcome Back!');
     }
 
     public function destroy()
